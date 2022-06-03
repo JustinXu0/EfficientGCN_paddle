@@ -15,6 +15,7 @@ This is an unofficial code based on PaddlePaddle of IEEE 2022 paper:
 
 ## 2.复现精度
 
+注：NTU RGB+D 60数据集,EfficientGCN-B0模型下的x-sub和x-view分别对应2001和2002模型
 
  NTU RGB+D 60数据集，EfficientGCN-B0模型  | X-sub（2001）  | X-view （2002） 
  ---- | ----- | ------  
@@ -22,8 +23,7 @@ This is an unofficial code based on PaddlePaddle of IEEE 2022 paper:
  Paddle  | 89.89% | 94.78%  
  
  在NTU RGB+D 60数据集上基本达到验收标准  
- 训练日志：  
- 模型权重：  
+ 训练日志和模型权重：  https://github.com/small-whirlwind/EfficientGCN_paddle/tree/main/workdir_pad
 ## 3.环境依赖
 - 硬件：GeForce RTX 2080 Ti  
 - Based on Python3 (anaconda, >= 3.5) and PyTorch (>= 1.6.0).
