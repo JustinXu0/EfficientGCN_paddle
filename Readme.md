@@ -30,8 +30,14 @@ This is an unofficial code based on PaddlePaddle of IEEE 2022 paper:
 - paddlePaddle-gpu==2.2.2  
 - padddlenlp==2.2.6
 - `pip install -r requirements.txt`  
-## 4.数据集
+## 4.数据集和预训练模型下载
 复现任务是在NTU RGB+D 60数据集上进行的，只需要骨骼点1-17的部分，可以从这里下载https://drive.google.com/file/d/1CUZnBtYwifVXS21yVg62T-vrPVayso5H/view  
+
+预训练模型，在这里下载https://drive.google.com/drive/folders/1HpvkKyfmmOCzuJXemtDxQCgGGQmWMvj4 。在本次任务中，下载2001,2002即可。
+
+但此处但此处下载的ckpy文件适配于pytorch框架，在此给出两种解决方案：  
+- 直接使用项目pretrained文件夹中转换好的ckpy  
+- 通过本项目中的transfer.py文件进行模型转换，将.pth文件转换为适配paddle的.pdparams文件。  
 ## 5.数据预处理
 ### 5.1 config文件生成
 输入数据集路径、预处理后的数据集存放路径、预训练模型路径等，生成config文件  
