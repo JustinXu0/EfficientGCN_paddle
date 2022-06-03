@@ -126,11 +126,13 @@ x-sub(2001)
 ```
 CUDA_VISIBLE_DEVICES=0 python3 main.py --gpus 0 -c 2001 -e
 ```
+注意，输入以上命令后需要选择测试的模型，作者训练好的达标模型标注为1号，输入数字1+回车即可
 
 x-view(2002)
 ```
 CUDA_VISIBLE_DEVICES=1 python3 main.py --gpus 0 -c 2001 -e
 ```
+同理，输入以上命令后需要选择测试的模型，作者训练好的达标模型标注为1号，输入数字1+回车即可
 部分测试输出如下：
 ```
 [ 2022-06-03 13:55:05,630 ] Saving folder path: /share/liukaiyuan/NTU60/paddle_xyf/workdir_pad/2013_EfficientGCN-B0_ntu-xsub/2022-06-03 13-55-05
