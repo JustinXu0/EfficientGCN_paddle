@@ -26,9 +26,9 @@ This is an unofficial code based on PaddlePaddle of IEEE 2022 paper:
  训练日志和模型权重：  https://github.com/small-whirlwind/EfficientGCN_paddle/tree/main/workdir_pad
 
  aistudio的实现方式：  
- 在./tasks/文件夹内运行CUDA_VISIBLE_DEVICES=0 python3 main.py --gpus 0 -c 2001 -e
- 在./tasks/文件夹内运行CUDA_VISIBLE_DEVICES=0 python3 main.py --gpus 0 -c 2002 -e
- 选择要测试的模型即可
+ 在./tasks/文件夹内运行CUDA_VISIBLE_DEVICES=0 python3 main.py --gpus 0 -c 2001 -e  
+ 在./tasks/文件夹内运行CUDA_VISIBLE_DEVICES=0 python3 main.py --gpus 0 -c 2002 -e  
+ 选择要测试的模型即可  
  
  ## 3.环境依赖
 - 硬件：GeForce RTX 2080 Ti  
