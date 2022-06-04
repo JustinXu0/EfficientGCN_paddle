@@ -172,7 +172,7 @@ Loss: 0.0241, LR: 0.0066:  66%|████████████████�
  日期  | 2022年6月
  框架版本 | PaddlePaddle-gpu==2.2.0
  应用场景 | 骨架动作识别
- 硬件支持 | GPU,CPU
+ 硬件支持 | GPU
  Aistudio |[Efficient_paddle](https://aistudio.baidu.com/aistudio/projectdetail/4167040?contributionType=1)
  
  感谢百度飞桨团队提供的技术支持！
