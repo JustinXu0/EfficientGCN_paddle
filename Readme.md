@@ -24,7 +24,13 @@ This is an unofficial code based on PaddlePaddle of IEEE 2022 paper:
  
  在NTU RGB+D 60数据集上基本达到验收标准  
  训练日志和模型权重：  https://github.com/small-whirlwind/EfficientGCN_paddle/tree/main/workdir_pad
-## 3.环境依赖
+
+ aistudio的实现方式：  
+ 在./tasks/文件夹内运行CUDA_VISIBLE_DEVICES=0 python3 main.py --gpus 0 -c 2001 -e
+ 在./tasks/文件夹内运行CUDA_VISIBLE_DEVICES=0 python3 main.py --gpus 0 -c 2002 -e
+ 选择要测试的模型即可
+ 
+ ## 3.环境依赖
 - 硬件：GeForce RTX 2080 Ti  
 - Based on Python3 (anaconda, >= 3.5) and PyTorch (>= 1.6.0).
 - paddlePaddle-gpu==2.2.2  
@@ -82,7 +88,7 @@ CUDA_VISIBLE_DEVICES=0 python3 main.py --gpus 0 -c 2001
 
 x-view(2002)
 ```
-CUDA_VISIBLE_DEVICES=1 python3 main.py --gpus 0 -c 2001
+CUDA_VISIBLE_DEVICES=1 python3 main.py --gpus 0 -c 2002
 ```
 
 部分训练输出如下：
@@ -130,7 +136,7 @@ CUDA_VISIBLE_DEVICES=0 python3 main.py --gpus 0 -c 2001 -e
 
 x-view(2002)
 ```
-CUDA_VISIBLE_DEVICES=1 python3 main.py --gpus 0 -c 2001 -e
+CUDA_VISIBLE_DEVICES=1 python3 main.py --gpus 0 -c 2002 -e
 ```
 同理，输入以上命令后需要选择测试的模型，作者训练好的达标模型标注为1号，输入数字1+回车即可
 部分测试输出如下：
@@ -167,5 +173,6 @@ Loss: 0.0241, LR: 0.0066:  66%|████████████████�
  框架版本 | PaddlePaddle-gpu==2.2.0
  应用场景 | 骨架动作识别
  硬件支持 | GPU,CPU
+ Aistudio |[Efficient_paddle](https://aistudio.baidu.com/aistudio/projectdetail/4167040?contributionType=1)
  
  感谢百度飞桨团队提供的技术支持！
