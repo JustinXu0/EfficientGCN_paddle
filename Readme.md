@@ -134,34 +134,96 @@ CUDA_VISIBLE_DEVICES=0 python3 main.py --gpus 0 -c 2001 -e
 ```
 注意，输入以上命令后需要选择测试的模型，作者训练好的达标模型标注为1号，输入数字1+回车即可
 
+结果如下所示：
+```
+[ 2022-06-05 23:53:25,024 ] Saving folder path: /share/liukaiyuan/NTU60/paddle_xyf/workdir_pad/temp
+[ 2022-06-05 23:53:25,024 ] 
+[ 2022-06-05 23:53:25,025 ] Starting preparing ...
+[ 2022-06-05 23:53:25,025 ] Saving model name: 2001_EfficientGCN-B0_ntu-xsub
+[ 2022-06-05 23:53:25,037 ] GPU-0 used: 3.0MB
+[ 2022-06-05 23:53:25,055 ] Dataset: ntu-xsub
+[ 2022-06-05 23:53:25,055 ] Batch size: train-16, eval-16
+[ 2022-06-05 23:53:25,055 ] Data shape (branch, channel, frame, joint, person): [3, 6, 288, 25, 2]
+[ 2022-06-05 23:53:25,055 ] Number of action classes: 60
+[ 2022-06-05 23:53:28,235 ] Model: EfficientGCN-B0 {'stem_channel': 64, 'block_args': [[48, 1, 0.5], [24, 1, 0.5], [64, 2, 1], [128, 2, 1]], 'fusion_stage': 2, 'act_type': 'swish', 'att_type': 'stja', 'layer_type': 'SG', 'drop_prob': 0.25, 'kernel_size': [5, 2], 'scale_args': [1.2, 1.35], 'expand_ratio': 0, 'reduct_ratio': 2, 'bias': True, 'edge': True}
+[ 2022-06-05 23:53:28,269 ] Pretrained model: /home/liukaiyuan/xyf/EfGCN/pretrained/2001_EfficientGCN-B0_ntu-xsub.pdparams.tar
+[ 2022-06-05 23:53:28,269 ] LR_Scheduler: cosine {'max_epoch': 70, 'warm_up': 10}
+[ 2022-06-05 23:53:28,270 ] Optimizer: SGD {'momentum': 0.9, 'weight_decay': 0.0001, 'learning_rate': <paddle.optimizer.lr.LambdaDecay object at 0x7f6ef0ba0290>, 'use_nesterov': True}
+[ 2022-06-05 23:53:28,270 ] Loss function: CrossEntropyLoss
+[ 2022-06-05 23:53:28,270 ] Successful!
+[ 2022-06-05 23:53:28,270 ] 
+[ 2022-06-05 23:53:28,271 ] Loading evaluating model ...
+[ 2022-06-05 23:53:28,272 ] Please choose the evaluating model from the following models.
+[ 2022-06-05 23:53:28,272 ] Default is the initial or pretrained model.
+[ 2022-06-05 23:53:28,273 ] (31) accuracy: 89.89% | training time: 2022-06-01 23-36-34
+[ 2022-06-05 23:53:28,273 ] (32) accuracy: 81.51% | training time: 2022-06-04 00-04-26
+[ 2022-06-05 23:53:28,273 ] (33) accuracy: 88.22% | training time: 2022-04-27 02-06-45
+[ 2022-06-05 23:53:28,273 ] (44) accuracy: 89.34% | training time: 2022-04-29 23-33-28
+[ 2022-06-05 23:53:28,273 ] (45) accuracy: 84.33% | training time: 2022-05-31 19-21-21
+[ 2022-06-05 23:53:28,273 ] (52) accuracy: 89.77% | training time: 2022-06-01 22-58-19
+[ 2022-06-05 23:53:28,273 ] Your choice (number of the model, q for quit): 
+[ 2022-06-05 23:53:28,273 ] 31
+[ 2022-06-05 23:54:08,988 ] Successful!
+[ 2022-06-05 23:54:08,988 ] 
+[ 2022-06-05 23:54:08,988 ] Starting evaluating ...
+100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1031/1031 [01:48<00:00,  9.53it/s]
+[ 2022-06-05 23:55:57,127 ] Top-1 accuracy: 14820/16487(89.89%), Top-5 accuracy: 16223/16487(98.40%), Mean loss:0.3859
+[ 2022-06-05 23:55:57,127 ] Evaluating time: 108.14s, Speed: 152.55 sequnces/(second*GPU)
+[ 2022-06-05 23:55:57,127 ] 
+[ 2022-06-05 23:55:57,143 ] Finish evaluating!
+```
+
+
 x-view(2002)
 ```
 CUDA_VISIBLE_DEVICES=1 python3 main.py --gpus 0 -c 2002 -e
 ```
 同理，输入以上命令后需要选择测试的模型，作者训练好的达标模型标注为1号，输入数字1+回车即可
 部分测试输出如下：
+
 ```
-[ 2022-06-03 13:55:05,630 ] Saving folder path: /share/liukaiyuan/NTU60/paddle_xyf/workdir_pad/2013_EfficientGCN-B0_ntu-xsub/2022-06-03 13-55-05
-[ 2022-06-03 13:55:05,631 ] 
-[ 2022-06-03 13:55:05,631 ] Starting preparing ...
-[ 2022-06-03 13:55:05,632 ] Saving model name: 2013_EfficientGCN-B0_ntu-xsub
-[ 2022-06-03 13:55:05,643 ] GPU-0 used: 0.125MB
-[ 2022-06-03 13:55:05,660 ] Dataset: ntu-xsub
-[ 2022-06-03 13:55:05,660 ] Batch size: train-16, eval-16
-[ 2022-06-03 13:55:05,660 ] Data shape (branch, channel, frame, joint, person): [3, 6, 288, 25, 2]
-[ 2022-06-03 13:55:05,661 ] Number of action classes: 60
-W0603 13:55:06.825852 14255 device_context.cc:447] Please NOTE: device: 0, GPU Compute Capability: 7.5, Driver API Version: 11.0, Runtime API Version: 10.2
-W0603 13:55:06.831449 14255 device_context.cc:465] device: 0, cuDNN Version: 7.6.
-[ 2022-06-03 13:55:08,716 ] Model: EfficientGCN-B0 {'stem_channel': 64, 'block_args': [[48, 1, 0.5], [24, 1, 0.5], [64, 2, 1], [128, 2, 1]], 'fusion_stage': 2, 'act_type': 'swish', 'att_type': 'stja', 'layer_type': 'Sep', 'drop_prob': 0.25, 'kernel_size': [5, 2], 'scale_args': [1.2, 1.35], 'expand_ratio': 2, 'reduct_ratio': 4, 'bias': True, 'edge': True}
-[ 2022-06-03 13:55:08,753 ] Pretrained model: /home/liukaiyuan/xyf/EfGCN/pretrained/2013_EfficientGCN-B0_ntu-xsub.pdparams.tar
-[ 2022-06-03 13:55:08,753 ] LR_Scheduler: cosine {'max_epoch': 70, 'warm_up': 10}
-[ 2022-06-03 13:55:08,754 ] Optimizer: SGD {'momentum': 0.9, 'weight_decay': 0.0001, 'learning_rate': <paddle.optimizer.lr.LambdaDecay object at 0x7f9a60395f90>, 'use_nesterov': True}
-[ 2022-06-03 13:55:08,754 ] Loss function: CrossEntropyLoss
-[ 2022-06-03 13:55:08,754 ] Successful!
-[ 2022-06-03 13:55:08,754 ] 
-[ 2022-06-03 13:55:08,755 ] Starting training ...
-Loss: 0.0241, LR: 0.0066:  66%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▍                                                            | 1662/2505 [07:45<03:53,  3.61it/s]
+[ 2022-06-06 00:32:03,271 ] Saving folder path: /share/liukaiyuan/NTU60/paddle_xyf/workdir_pad/temp
+[ 2022-06-06 00:32:03,272 ] 
+[ 2022-06-06 00:32:03,272 ] Starting preparing ...
+[ 2022-06-06 00:32:03,272 ] Saving model name: 2002_EfficientGCN-B0_ntu-xview
+[ 2022-06-06 00:32:03,314 ] GPU-0 used: 6460.0MB
+[ 2022-06-06 00:32:03,316 ] 
+[ 2022-06-06 00:32:03,316 ] GPU-0 is occupied!
+[ 2022-06-06 00:32:03,338 ] Dataset: ntu-xview
+[ 2022-06-06 00:32:03,338 ] Batch size: train-16, eval-16
+[ 2022-06-06 00:32:03,338 ] Data shape (branch, channel, frame, joint, person): [3, 6, 288, 25, 2]
+[ 2022-06-06 00:32:03,338 ] Number of action classes: 60
+[ 2022-06-06 00:32:06,812 ] Model: EfficientGCN-B0 {'stem_channel': 64, 'block_args': [[48, 1, 0.5], [24, 1, 0.5], [64, 2, 1], [128, 2, 1]], 'fusion_stage': 2, 'act_type': 'swish', 'att_type': 'stja', 'layer_type': 'SG', 'drop_prob': 0.25, 'kernel_size': [5, 2], 'scale_args': [1.2, 1.35], 'expand_ratio': 0, 'reduct_ratio': 2, 'bias': True, 'edge': True}
+[ 2022-06-06 00:32:06,841 ] Pretrained model: /home/liukaiyuan/xyf/EfGCN/pretrained/2002_EfficientGCN-B0_ntu-xview.pdparams.tar
+[ 2022-06-06 00:32:06,842 ] LR_Scheduler: cosine {'max_epoch': 70, 'warm_up': 10}
+[ 2022-06-06 00:32:06,843 ] Optimizer: SGD {'momentum': 0.9, 'weight_decay': 0.0001, 'learning_rate': <paddle.optimizer.lr.LambdaDecay object at 0x7fbdc04534d0>, 'use_nesterov': True}
+[ 2022-06-06 00:32:06,843 ] Loss function: CrossEntropyLoss
+[ 2022-06-06 00:32:06,843 ] Successful!
+[ 2022-06-06 00:32:06,843 ] 
+[ 2022-06-06 00:32:06,843 ] Loading evaluating model ...
+[ 2022-06-06 00:32:06,844 ] Please choose the evaluating model from the following models.
+[ 2022-06-06 00:32:06,844 ] Default is the initial or pretrained model.
+[ 2022-06-06 00:32:06,844 ] (2) accuracy: 94.03% | training time: 2022-04-29 23-50-44
+[ 2022-06-06 00:32:06,844 ] (3) accuracy: 94.78% | training time: 2022-06-01 23-37-31
+[ 2022-06-06 00:32:06,844 ] (6) accuracy: 94.22% | training time: 2022-05-31 03-29-21
+[ 2022-06-06 00:32:06,844 ] (9) accuracy: 90.68% | training time: 2022-05-31 19-21-24
+[ 2022-06-06 00:32:06,844 ] (10) accuracy: 94.69% | training time: 2022-06-02 17-38-01
+[ 2022-06-06 00:32:06,844 ] (11) accuracy: 94.18% | training time: 2022-05-30 06-26-24
+[ 2022-06-06 00:32:06,844 ] (12) accuracy: 94.10% | training time: 2022-06-01 05-11-02
+[ 2022-06-06 00:32:06,844 ] Your choice (number of the model, q for quit): 
+[ 2022-06-06 00:32:06,844 ] 3
+[ 2022-06-06 00:32:27,550 ] Successful!
+[ 2022-06-06 00:32:27,550 ] 
+[ 2022-06-06 00:32:27,550 ] Starting evaluating ...
+100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1184/1184 [02:03<00:00,  9.57it/s]
+[ 2022-06-06 00:34:31,248 ] Top-1 accuracy: 17944/18932(94.78%), Top-5 accuracy: 18798/18932(99.29%), Mean loss:0.1925
+[ 2022-06-06 00:34:31,249 ] Evaluating time: 123.70s, Speed: 153.15 sequnces/(second*GPU)
+[ 2022-06-06 00:34:31,249 ] 
+[ 2022-06-06 00:34:31,266 ] Finish evaluating!
+
 ```
+
+
 
 
 ## 7 附录
