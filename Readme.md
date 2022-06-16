@@ -235,6 +235,6 @@ CUDA_VISIBLE_DEVICES=1 python3 main.py --gpus 0 -c 2002 -e
  框架版本 | PaddlePaddle-gpu==2.2.0
  应用场景 | 骨架动作识别
  硬件支持 | GPU
- Aistudio |[Efficient_paddle](https://aistudio.baidu.com/aistudio/projectdetail/4167040?contributionType=1)
+ Aistudio |[Efficient_paddle](https://aistudio.baidu.com/aistudio/projectdetail/4167040?_=1655386061207&contributionType=1)
  
  感谢百度飞桨团队提供的技术支持！
