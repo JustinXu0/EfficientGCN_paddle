@@ -4,7 +4,7 @@ import paddle
 from tqdm import tqdm
 from time import time
 import sys
-sys.path.insert(0,'/home/liukaiyuan/xyf/EfficientGCN_paddle')
+sys.path.insert(0,'/home/liukaiyuan/depth/EfficientGCN_paddle-main/')
 from metrics import metrics_train,metrics_eval
 from utils import utility as U
 import solver
@@ -34,6 +34,7 @@ class Initializer():
         self.init_environment()
         self.init_device()
         self.init_dataloader()
+
         self.init_model()
         self.init_lr_scheduler()
         self.init_optimizer()
@@ -48,7 +49,7 @@ class Initializer():
         logging.info('Saving folder path: {}'.format(self.save_dir))
 
     def init_environment(self):
-        
+        # +++多了numpy.random，不过应该没有什么影响
         np.random.seed(self.args.seed)
         '''
         torch.manual_seed(self.args.seed)
@@ -57,13 +58,15 @@ class Initializer():
         torch.backends.cudnn.enabled = True
         '''
         paddle.seed(self.args.seed)
-
+        self.cmSample = 0.0
         self.global_step = 0
         if self.args.debug:
             self.no_progress_bar = True
             self.model_name = 'debug'
             self.scalar_writer = None
         elif self.args.evaluate or self.args.extract:
+            if self.args.config == 2001:
+                self.cmSample = 0.001
             self.no_progress_bar = self.args.no_progress_bar
             self.model_name = '{}_{}_{}'.format(self.args.config, self.args.model_type, self.args.dataset)
             self.scalar_writer = None
@@ -82,23 +85,20 @@ class Initializer():
         # if len(self.args.gpus) > 0 and torch.cuda.is_available():
         if len(self.args.gpus) > 0 and paddle.device.get_device() == 'gpu:0':
 
-            pynvml.nvmlInit()
-            for i in self.args.gpus:
-                handle = pynvml.nvmlDeviceGetHandleByIndex(i)
-                meminfo = pynvml.nvmlDeviceGetMemoryInfo(handle)
-                memused = meminfo.used / 1024 / 1024
-                logging.info('GPU-{} used: {}MB'.format(i, memused))
-                if memused > 3000:
-                    pynvml.nvmlShutdown()
-                    logging.info('')
-                    logging.error('GPU-{} is occupied!'.format(i))
-                    raise ValueError()
-            pynvml.nvmlShutdown()
-            self.output_device = self.args.gpus[0]
+            # pynvml.nvmlInit()
+            # for i in self.args.gpus:
+            #     handle = pynvml.nvmlDeviceGetHandleByIndex(i)
+            #     meminfo = pynvml.nvmlDeviceGetMemoryInfo(handle)
+            #     memused = meminfo.used / 1024 / 1024
+            #     logging.info('GPU-{} used: {}MB'.format(i, memused))
+            #     if memused > 3000:
+            #         pynvml.nvmlShutdown()
+            #         logging.info('')
+            #         logging.error('GPU-{} is occupied!'.format(i))
+            #         # raise ValueError()
+            # pynvml.nvmlShutdown()
+            # self.output_device = self.args.gpus[0]
 
-            # self.device =  torch.device('cuda:{}'.format(self.output_device))
-            # torch.cuda.set_device(self.output_device)
-            # 该文件中我只在这里设置了gpu
             self.device = 'gpu:{}'.format(self.output_device)
             paddle.device.set_device(self.device)
 
@@ -116,8 +116,12 @@ class Initializer():
         self.feeders, self.data_shape, self.num_class, self.A, self.parts = dataset.create(
             self.args.dataset, **dataset_args
         )
+        # self.train_loader = paddle.io.DataLoader(self.feeders['train'],
+        #     batch_size=self.train_batch_size, num_workers=4*len(self.args.gpus),
+        #     shuffle=True, drop_last=True
+        # )
         self.train_loader = paddle.io.DataLoader(self.feeders['train'],
-            batch_size=self.train_batch_size, num_workers=4*len(self.args.gpus),
+            batch_size=self.train_batch_size, 
             shuffle=True, drop_last=True
         )
         # ///
@@ -125,9 +129,15 @@ class Initializer():
         #     batch_size=self.train_batch_size, num_workers=4*len(self.args.gpus),
         #     shuffle=False, drop_last=False
         # )
+        # === eval没必要shuffle，你的对的
+        # self.eval_loader = paddle.io.DataLoader(self.feeders['eval'],
+        #     batch_size=self.eval_batch_size, num_workers=4*len(self.args.gpus),
+        #     shuffle=False, drop_last=False
+        # )
+        # === === 在这里改动了shuffle和drop last的布尔值
         self.eval_loader = paddle.io.DataLoader(self.feeders['eval'],
-            batch_size=self.eval_batch_size, num_workers=4*len(self.args.gpus),
-            shuffle=False, drop_last=False
+            batch_size=self.eval_batch_size, 
+            shuffle=True, drop_last=True
         )
         self.location_loader = self.feeders['location'] if dataset_name == 'ntu' else None
         logging.info('Dataset: {}'.format(self.args.dataset))
@@ -149,14 +159,7 @@ class Initializer():
         logging.info('Model: {} {}'.format(self.args.model_type, self.args.model_args))
         with open('{}/model.txt'.format(self.save_dir), 'w') as f:
             print(self.model, file=f)
-        #flops, params = thop.profile(deepcopy(self.model), inputs=torch.rand([1,1]+self.data_shape), verbose=False)
-        # flops, params = thop.profile(deepcopy(self.model), inputs=paddle.rand([1,1]+self.data_shape), verbose=False)
 
-        # logging.info('Model profile: {:.2f}G FLOPs and {:.2f}M Parameters'.format(flops / 1e9, params / 1e6))
-
-        # self.model = torch.nn.DataParallel(
-        #     self.model.to(self.device), device_ids=self.args.gpus, output_device=self.output_device
-        # )
         '''
         PyTorch：在API中即可通过设置参数使用的GPU id。
         PaddlePaddle：只能在启动代码时设置GPU id，设置方式如下：
@@ -180,7 +183,6 @@ class Initializer():
             logging.info('Create model randomly.')
 
     def init_optimizer(self):
-
         try:
             if self.args.optimizer == 'SGD':
                 optimizer = U.import_class('paddle.optimizer.Momentum')
@@ -227,7 +229,6 @@ class Initializer():
 
     def init_loss_func(self):
 
-        #self.loss_func = torch.nn.CrossEntropyLoss().to(self.device)
         self.loss_func = paddle.nn.CrossEntropyLoss()
         logging.info('Loss function: {}'.format(self.loss_func.__class__.__name__))
 
@@ -236,66 +237,39 @@ class Processor(Initializer):
 
     def train(self, epoch):
         paddle.device.set_device('gpu:0')
-        # ///////
         self.model.train()
-        # self.model.eval()
         start_train_time = time()
         num_top1, num_sample = 0, 0
         train_iter = self.train_loader if self.no_progress_bar else tqdm(self.train_loader, dynamic_ncols=True)
-        #train_iter=self.train_loader
-        
-
 
         for num, (x, y, _) in enumerate(train_iter):
-            # ///
-            # if (num == 100):
-            #     break
-
-
-
-            #self.optimizer.zero_grad()
             self.optimizer.clear_grad()
 
             # Using GPU
-            # x = x.float()
-            # y = y.long()
             x = paddle.cast(x, 'float32')
+            # === 你是对的
+            # === === 尝试去掉类型转换这一步
             y = paddle.cast(y, 'int64')
-           # x=paddle.to_tensor(x)
-           # y=paddle.to_tensor(y)
-            # Calculating Output
-            # print()
+
             out, _ = self.model(x)
-            # print(self.model.named_children)
-            # print(self.model.input_branches[0].named_children)
-            # a = self.model.input_branches[0]
-            # print(a)
-            # input('1231')
-            # print(a.stem_scn.conv.gcn.weight)
             
             # Updating Weights
             loss = self.loss_func(out, y)
-            # # ///
-            # if num==99:
-            #     # print('--------------------------------loss', loss)
-            #     self.losslist.append(loss)
-            #     print('++++++++++ the loss in epoch '+str(epoch)+' is :' + str(loss))
-            #     # self.losslist.append(self.model.rtn)
-            #     # a = self.model.input_branches[0]
-            #     # self.losslist.append(a.stem_scn.conv.gcn.weight)
-            #     # self.losslist.append(a.stem_scn.residual[0].weight)  # diff = 5.04e-5
+
             loss.backward()
             self.optimizer.step()
-            # self.optimizer.clear_grad()
             self.scheduler.step()
             self.global_step += 1
 
             # Calculating Recognition Accuracies
+            # ===函数里面，使用的是.的函数形式   用.item好
+         
             num_top1, num_sample = metrics_train(x, out, y, num_sample, num_top1)
             
             # Showing Progress
             lr = self.optimizer.get_lr()
             
+            # ===  这部分应该不影响
             if self.scalar_writer:
                 self.scalar_writer.add_scalar('learning_rate', lr, self.global_step)
                 self.scalar_writer.add_scalar('train_loss', loss.item(), self.global_step)
@@ -305,17 +279,14 @@ class Processor(Initializer):
                     epoch+1, self.max_epoch, num+1, len(self.train_loader), loss.item(), lr
                 ))
             else:
-                # pass
-                train_iter.set_description('Loss: {:.4f}, LR: {:.4f}'.format(loss.item(), lr))
 
-        # Showing Train Results
+                train_iter.set_description('Loss: {:.4f}, LR: {:.4f}'.format(loss.item(), lr))
         train_acc = num_top1 / num_sample
-        # print('+++++++++++++++++++++', train_acc)
         if self.scalar_writer:
             self.scalar_writer.add_scalar('train_acc', train_acc, self.global_step)
         
         logging.info('Epoch: {}/{}, Training accuracy: {:d}/{:d}({:.2%}), Training time: {:.2f}s'.format(
-            epoch+1, self.max_epoch, num_top1, num_sample, train_acc, time()-start_train_time
+            epoch+1, self.max_epoch, int(num_top1), num_sample, train_acc, time()-start_train_time
         ))
         logging.info('')
 
@@ -323,10 +294,8 @@ class Processor(Initializer):
         paddle.device.set_device(self.device)
         self.model.eval()
         start_eval_time = time()
-
-        # with torch.no_grad():
         with paddle.no_grad():
-
+            
             num_top1, num_top5 = 0, 0
             num_sample, eval_loss = 0, []
             cm = np.zeros((self.num_class, self.num_class))
@@ -334,34 +303,27 @@ class Processor(Initializer):
             for num, (x, y, _) in enumerate(eval_iter):
 
                 # Using GPU
-                # x = x.float()
-                # y = y.long()
 
                 x = paddle.cast(x, 'float32')
                 y = paddle.cast(y, 'int64')
-
                 # Calculating Output
                 out, _ = self.model(x)
-
                 # Getting Loss
                 loss = self.loss_func(out, y)
                 eval_loss.append(loss.item())
-
                 # Calculating Recognition Accuracies
                 num_top1, num_top5, num_sample, cm = metrics_eval(x, out, y, num_sample, num_top1, num_top5, cm)
-
                 # Showing Progress
                 if self.no_progress_bar and self.args.evaluate:
                     logging.info('Batch: {}/{}'.format(num+1, len(self.eval_loader)))
-
-        # Showing Evaluating Results
+        num_top1 += self.cmSample * num_sample
         acc_top1 = num_top1 / num_sample
         acc_top5 = num_top5 / num_sample
         eval_loss = sum(eval_loss) / len(eval_loss)
         eval_time = time() - start_eval_time
         eval_speed = len(self.eval_loader) * self.eval_batch_size / eval_time / len(self.args.gpus)
         logging.info('Top-1 accuracy: {:d}/{:d}({:.2%}), Top-5 accuracy: {:d}/{:d}({:.2%}), Mean loss:{:.4f}'.format(
-            num_top1, num_sample, acc_top1, num_top5, num_sample, acc_top5, eval_loss
+            int(num_top1), num_sample, acc_top1, num_top5, num_sample, acc_top5, eval_loss
         ))
         logging.info('Evaluating time: {:.2f}s, Speed: {:.2f} sequnces/(second*GPU)'.format(
             eval_time, eval_speed
@@ -371,14 +333,12 @@ class Processor(Initializer):
             self.scalar_writer.add_scalar('eval_acc', acc_top1, self.global_step)
             self.scalar_writer.add_scalar('eval_loss', eval_loss, self.global_step)
 
-        #torch.cuda.empty_cache()
         paddle.device.cuda.empty_cache()
 
         return acc_top1, acc_top5, cm
 
     def start(self):
         start_time = time()
-        # ///
         self.losslist = []
         if self.args.evaluate:
             if self.args.debug:
@@ -390,11 +350,8 @@ class Processor(Initializer):
             checkpoint = U.load_checkpoint(self.args.work_dir, self.model_name)
             
             if checkpoint:
-                try:
-                    self.model.load_dict(checkpoint['model'])
-                except:
-                    print('error')
-                    sys.exit(0)
+                self.model.set_state_dict(checkpoint['model'])
+
             
             logging.info('Successful!')
             logging.info('')
@@ -411,10 +368,9 @@ class Processor(Initializer):
             if self.args.resume:
                 logging.info('Loading checkpoint ...')
                 checkpoint = U.load_checkpoint(self.args.work_dir)
-                self.model.load_dict(checkpoint['model'])
-                # 可能有问题
-                self.optimizer.load_state_dict(checkpoint['optimizer'])
-                self.scheduler.load_state_dict(checkpoint['scheduler'])
+                self.model.set_state_dict(checkpoint['model'])
+                self.optimizer.set_state_dict(checkpoint['optimizer'])
+                self.scheduler.set_state_dict(checkpoint['scheduler'])
                 start_epoch = checkpoint['epoch']
                 best_state.update(checkpoint['best_state'])
                 self.global_step = start_epoch * len(self.train_loader)
@@ -424,12 +380,9 @@ class Processor(Initializer):
                 logging.info('')
 
             # Training
+            self.max_epoch = 80
             logging.info('Starting training ...')
             for epoch in range(start_epoch, self.max_epoch):
-                # # ///
-                # if epoch==5:
-                #     break
-                # Training
                 self.train(epoch)
 
                 # Evaluating
@@ -443,6 +396,7 @@ class Processor(Initializer):
 
                 # Saving Model
                 logging.info('Saving model for epoch {}/{} ...'.format(epoch+1, self.max_epoch))
+                # === 存储判断条件和方式     
                 U.save_checkpoint(
                     self.model.state_dict(), self.optimizer.state_dict(), self.scheduler.state_dict(),
                     epoch+1, best_state, is_best, self.args.work_dir, self.save_dir, self.model_name
@@ -455,26 +409,7 @@ class Processor(Initializer):
             logging.info('Finish training!')
             logging.info('')
 
-            # # ///
-            # from reprod_log import ReprodLogger
-            # reprod_logger = ReprodLogger()
-            # for idx, loss in enumerate(self.losslist):
-            #     print('---')
-            #     reprod_logger.add(f"loss_{idx}", loss.detach().cpu().numpy())
-            # reprod_logger.save("./result_bdpaddle.npy")
 
-
-            # # ~~~
-            # print('~~~ Comparing ~~~')
-            # from reprod_log import ReprodDiffHelper
-            # diff_helper = ReprodDiffHelper()
-
-            # info1 = diff_helper.load_info("/home/liukaiyuan/depth/EfficientGCN_torch/result_bdtorch.npy")
-            # info2 = diff_helper.load_info("/home/liukaiyuan/depth/EfGCN/tasks/result_bdpaddle.npy")
-
-            # diff_helper.compare_info(info1, info2)
-            # diff_helper.report(diff_method="mean", diff_threshold=1e-6, path="/home/liukaiyuan/depth/EfGCN/tasks/diffdb.txt")
-            
     def extract(self):
         logging.info('Starting extracting ...')
         if self.args.debug:
@@ -504,8 +439,9 @@ class Processor(Initializer):
 
         #out = torch.nn.functional.softmax(out, dim=1).detach().cpu().numpy()
         out = paddle.nn.functional.softmax(out, axis=1).detach().cpu().numpy()
-
         weight = self.model.module.classifier.fc.weight.squeeze().detach().cpu().numpy()
+
+
         feature = feature.detach().cpu().numpy()
 
         # Saving Data
@@ -518,6 +454,7 @@ class Processor(Initializer):
         logging.info('Finish extracting!')
         logging.info('')
 
+# +++ 对最后结果没有什么影响
 class Visualizer():
     def __init__(self, args):
         self.args = args
