@@ -1,0 +1,46 @@
+[ 2022-06-16 13:50:18,249 ] Saving folder path: /home/liukaiyuan/depth/EfficientGCN_paddle-main/workdir_pad/temp
+[ 2022-06-16 13:50:18,250 ] 
+[ 2022-06-16 13:50:18,250 ] Starting preparing ...
+[ 2022-06-16 13:50:18,250 ] Saving model name: 2001_EfficientGCN-B0_ntu-xsub
+[ 2022-06-16 13:50:18,257 ] GPU-0 used: 18.625MB
+[ 2022-06-16 13:50:18,268 ] Dataset: ntu-xsub
+[ 2022-06-16 13:50:18,268 ] Batch size: train-16, eval-16
+[ 2022-06-16 13:50:18,268 ] Data shape (branch, channel, frame, joint, person): [3, 6, 288, 25, 2]
+[ 2022-06-16 13:50:18,268 ] Number of action classes: 60
+[ 2022-06-16 13:50:19,678 ] Model: EfficientGCN-B0 {'stem_channel': 64, 'block_args': [[48, 1, 0.5], [24, 1, 0.5], [64, 2, 1], [128, 2, 1]], 'fusion_stage': 2, 'act_type': 'swish', 'att_type': 'stja', 'layer_type': 'SG', 'drop_prob': 0.25, 'kernel_size': [5, 2], 'scale_args': [1.2, 1.35], 'expand_ratio': 0, 'reduct_ratio': 2, 'bias': True, 'edge': True}
+[ 2022-06-16 13:50:19,679 ] LR_Scheduler: cosine {'max_epoch': 70, 'warm_up': 10}
+[ 2022-06-16 13:50:19,680 ] Optimizer: SGD {'momentum': 0.9, 'weight_decay': 0.0001, 'learning_rate': <paddle.optimizer.lr.LambdaDecay object at 0x7f841e755a90>, 'use_nesterov': True}
+[ 2022-06-16 13:50:19,680 ] Loss function: CrossEntropyLoss
+[ 2022-06-16 13:50:19,680 ] Successful!
+[ 2022-06-16 13:50:19,680 ] 
+[ 2022-06-16 13:50:19,680 ] Loading evaluating model ...
+[ 2022-06-16 13:50:19,681 ] Please choose the evaluating model from the following models.
+[ 2022-06-16 13:50:19,681 ] Default is the initial or pretrained model.
+[ 2022-06-16 13:50:19,681 ] (5) accuracy: 89.51% | training time: 2022-06-12 20-42-59
+[ 2022-06-16 13:50:19,681 ] (8) accuracy: 89.89% | training time: 2022-06-01 23-36-34
+[ 2022-06-16 13:50:19,681 ] (12) accuracy: 89.73% | training time: 2022-06-11 16-06-40
+[ 2022-06-16 13:50:19,681 ] (13) accuracy: 90.06% | training time: 2022-06-10 10-52-11
+[ 2022-06-16 13:50:19,681 ] (15) accuracy: 89.93% | training time: 2022-06-10 09-45-50
+[ 2022-06-16 13:50:19,681 ] (17) accuracy: 89.75% | training time: 2022-06-14 10-21-56
+[ 2022-06-16 13:50:19,681 ] (18) accuracy: 85.38% | training time: 2022-06-09 19-11-08
+[ 2022-06-16 13:50:19,681 ] (19) accuracy: 81.19% | training time: 2022-06-10 09-48-00
+[ 2022-06-16 13:50:19,682 ] (21) accuracy: 82.09% | training time: 2022-06-10 00-42-38
+[ 2022-06-16 13:50:19,682 ] (22) accuracy: 90.10% | training time: 2022-06-13 09-55-23
+[ 2022-06-16 13:50:19,682 ] (25) accuracy: 89.75% | training time: 2022-06-12 20-42-50
+[ 2022-06-16 13:50:19,682 ] (27) accuracy: 89.92% | training time: 2022-06-10 22-39-30
+[ 2022-06-16 13:50:19,682 ] (29) accuracy: 80.69% | training time: 2022-06-12 06-50-38
+[ 2022-06-16 13:50:19,682 ] (34) accuracy: 89.30% | training time: 2022-06-11 01-08-42
+[ 2022-06-16 13:50:19,682 ] (39) accuracy: 90.04% | training time: 2022-06-13 09-39-11
+[ 2022-06-16 13:50:19,682 ] (40) accuracy: 89.77% | training time: 2022-06-12 08-46-52
+[ 2022-06-16 13:50:19,682 ] (42) accuracy: 90.00% | training time: 2022-06-15 02-05-16
+[ 2022-06-16 13:50:19,682 ] (46) accuracy: 89.46% | training time: 2022-06-11 16-13-08
+[ 2022-06-16 13:50:19,682 ] (47) accuracy: 89.56% | training time: 2022-06-14 01-51-23
+[ 2022-06-16 13:50:19,682 ] (49) accuracy: 89.67% | training time: 2022-06-12 04-21-38
+[ 2022-06-16 13:50:19,682 ] Your choice (number of the model, q for quit): 
+[ 2022-06-16 13:50:21,574 ] Successful!
+[ 2022-06-16 13:50:21,574 ] 
+[ 2022-06-16 13:50:21,574 ] Starting evaluating ...
+[ 2022-06-16 13:52:55,569 ] Top-1 accuracy: 14865/16480(90.20%), Top-5 accuracy: 16209/16480(98.36%), Mean loss:0.3799
+[ 2022-06-16 13:52:55,569 ] Evaluating time: 153.99s, Speed: 107.02 sequnces/(second*GPU)
+[ 2022-06-16 13:52:55,569 ] 
+[ 2022-06-16 13:52:55,576 ] Finish evaluating!
