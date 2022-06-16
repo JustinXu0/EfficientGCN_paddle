@@ -20,7 +20,7 @@ This is an unofficial code based on PaddlePaddle of IEEE 2022 paper:
  NTU RGB+D 60数据集，EfficientGCN-B0模型  | X-sub（2001）  | X-view （2002） 
  ---- | ----- | ------  
  Paper  | 90.2% | 94.9% 
- Paddle  | 89.89% | 94.78%  
+ Paddle  | 90.2% | 94.99%  
  
  在NTU RGB+D 60数据集上基本达到验收标准  
  训练日志和模型权重：  https://github.com/small-whirlwind/EfficientGCN_paddle/tree/main/workdir_pad
