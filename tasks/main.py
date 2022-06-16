@@ -31,7 +31,6 @@ def main():
             v.start()
 
     else:
-        # print('123')
         p = Processor(args)
         p.start()
 
@@ -84,9 +83,11 @@ def update_parameters(parser, args):
     if os.path.exists('../configs/{}.yaml'.format(args.config)):
         with open('../configs/{}.yaml'.format(args.config), 'r') as f:
             try:
-                yaml_arg = yaml.load(f, Loader=yaml.FullLoader)
+                # === safe_load  差别只在于截断0，应该不影响
+                yaml_arg = yaml.safe_load(f, Loader=yaml.FullLoader)
             except:
-                yaml_arg = yaml.load(f)
+                # === safe_load
+                yaml_arg = yaml.safe_load(f)
             default_arg = vars(args)
             for k in yaml_arg.keys():
                 if k not in default_arg.keys():
