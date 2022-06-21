@@ -230,7 +230,7 @@ CUDA_VISIBLE_DEVICES=1 python3 main.py --gpus 0 -c 2002 -e
 
  信息| 描述
  ---- | ----- 
- 作者  | small-whirlwind 
+ 作者  | 许源锋，孙一玮，费芳芷
  日期  | 2022年6月
  框架版本 | PaddlePaddle-gpu==2.2.0
  应用场景 | 骨架动作识别
